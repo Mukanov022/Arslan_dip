@@ -2,17 +2,20 @@ from django.db import models
 
 
 class DeviceType(models.Model):
+    """Модель описывающие типы устройств"""
     type_name = models.CharField(max_length=150, verbose_name='Название')
 
     class Meta:
         verbose_name = "Тип устройств"
-        verbose_name_plural = "Типы устройств"
+        verbose_name_plural = "Типы устройства"
 
     def __str__(self):
         return self.type_name
 
 
 class Manufacture(models.Model):
+    """Модель описывающя производителя"""
+
     name = models.CharField(max_length=150, verbose_name='Производитель')
     country = models.CharField(max_length=90, verbose_name='Страна производства')
 
@@ -25,6 +28,8 @@ class Manufacture(models.Model):
 
 
 class Device(models.Model):
+    """Модель описывающие структуру устройства,серийный номер"""
+
     id_type = models.ForeignKey(DeviceType, blank=True, null=True, verbose_name='Тип устройства',
                                 on_delete=models.CASCADE)
     manufacture = models.ForeignKey(Manufacture, blank=True, null=True, verbose_name='Тип устройства',
@@ -43,6 +48,8 @@ class Device(models.Model):
 
 
 class Settings(models.Model):
+    """Модель описывающий структуру настройки"""
+
     name = models.ForeignKey(DeviceType, blank=True, null=True, verbose_name='Тип устройства', on_delete=models.CASCADE)
 
     class Meta:
@@ -54,6 +61,8 @@ class Settings(models.Model):
 
 
 class Properties(models.Model):
+    """Модель описывающая свойства"""
+
     id_device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.CASCADE)
     id_settings = models.ForeignKey(Settings, blank=True, null=True, on_delete=models.CASCADE)
 
@@ -66,6 +75,8 @@ class Properties(models.Model):
 
 
 class Role(models.Model):
+    """Модель описывающий должности"""
+
     name = models.CharField(verbose_name='Название должности', max_length=120)
     desc = models.TextField(verbose_name='Описание', blank=True, null=True)
 
@@ -78,6 +89,8 @@ class Role(models.Model):
 
 
 class Deportment(models.Model):
+    """Модель описываюший структуру отдела"""
+
     name = models.CharField(verbose_name='Название отдела', max_length=120)
 
     class Meta:
@@ -89,8 +102,10 @@ class Deportment(models.Model):
 
 
 class Employee(models.Model):
+    """Модель описывающий структуру сотрудника"""
+
     id_deportment = models.ForeignKey(Deportment, on_delete=models.CASCADE)
-    personal_number = models.IntegerField(verbose_name='Идетификационный номер')
+    personal_number = models.IntegerField(verbose_name='Идентификационный номер')
     first_name = models.CharField(max_length=150, verbose_name='Фамилия')
     last_name = models.CharField(max_length=150, verbose_name='Имя')
     patronymic = models.CharField(max_length=150, verbose_name='Отчество', blank=True)
