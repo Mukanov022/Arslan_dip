@@ -2,17 +2,50 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(Device)
-admin.site.register(DeviceType)
+
+@admin.register(Device)
+class DeviceAdmin(admin.ModelAdmin):
+    list_display = ["serial_number","device_name","installing_date"]
+    search_fields = ("device_name__startswith",)
+
+
+@admin.register(DeviceType)
+class DeviceTypeAdmin(admin.ModelAdmin):
+    list_display = ["type_name"]
+    search_fields = ("type_name__startswith",)
 
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ["personal_number", "first_name", "last_name", "role"]
+    search_fields = ("last_name__startswith",)
 
 
-admin.site.register(Settings)
-admin.site.register(Role)
-admin.site.register(Manufacture)
-admin.site.register(Properties)
-admin.site.register(Deportment)
+@admin.register(Settings)
+class SettingsAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ("name__startswith",)
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ("desc__startswith",)
+
+
+@admin.register(Manufacture)
+class ManufactureAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ("country__startswith",)
+
+
+@admin.register(Properties)
+class PropertiesAdmin(admin.ModelAdmin):
+    list_display = ["id_device"]
+    search_fields = ("id_settings__startswith",)
+
+
+@admin.register(Deportment)
+class DeportmentAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ("name__startswith",)
