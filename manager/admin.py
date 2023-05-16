@@ -1,11 +1,40 @@
+import csv
+
 from django.contrib import admin
+from django.http import HttpResponse
 
 from .models import *
 
 
+def export_to_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="export.csv"'
+
+    writer = csv.writer(response)
+    fields = modeladmin.model._meta.fields
+
+    # Create the matrix-like structure
+    data = []
+    header_row = [''] + [field.verbose_name for field in fields]
+    data.append(header_row)
+
+    for obj in queryset:
+        data_row = [obj.pk] + [str(getattr(obj, field.name)) for field in fields]
+        data.append(data_row)
+
+    # Write the matrix-like structure
+    for row in data:
+        writer.writerow(row)
+
+    return response
+
+
+export_to_csv.short_description = "Экспорт в CSV"
+
+
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ["serial_number","device_name","installing_date"]
+    list_display = ["serial_number", "device_name", "installing_date"]
     search_fields = ("device_name__startswith",)
 
 
@@ -19,6 +48,7 @@ class DeviceTypeAdmin(admin.ModelAdmin):
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ["personal_number", "first_name", "last_name", "role"]
     search_fields = ("last_name__startswith",)
+    actions = [export_to_csv]
 
 
 @admin.register(Settings)
